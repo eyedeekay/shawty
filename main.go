@@ -42,7 +42,7 @@ func main() {
 	http.Handle("/red/", handlers.RedirectHandler(storage))
 
 	if *i2p {
-		garlic, err := onramp.NewGarlic()
+		garlic, err := onramp.NewGarlic("domovoi", "127.0.0.1:7656", onramp.OPT_DEFAULTS)
 		if err != nil {
 			log.Fatal(err)
 		}
