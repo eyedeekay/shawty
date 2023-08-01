@@ -55,7 +55,7 @@ func main() {
 			log.Fatal(err)
 		}
 	} else {
-		err = http.ListenAndServe(*host":"+*port, nil)
+		err = http.ListenAndServe(*host+":"+*port, nil)
 		if err != nil {
 			log.Fatal(err)
 		}
