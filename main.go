@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"net/http"
 	"os"
@@ -9,13 +10,27 @@ import (
 
 	"github.com/didip/shawty/handlers"
 	"github.com/didip/shawty/storages"
-	"github.com/mitchellh/go-homedir"
+	"github.com/eyedeekay/onramp"
 )
+
+var (
+	i2p  = flag.Bool("i2p", false, "Use I2P")
+	host = flag.String("host", "127.0.0.1", "Host(ignored if using I2P)")
+	port = flag.String("port", defport(), "Port(ignored if using I2P)")
+)
+
+func defport() string{
+	p:= os.Getenv("PORT")
+	if p != "" {
+		return p
+	}
+	return "8080"
+}
 
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	dir, _ := homedir.Dir()
+	dir, _ := os.UserHomeDir()
 	storage := &storages.Filesystem{}
 	err := storage.Init(filepath.Join(dir, "shawty"))
 	if err != nil {
@@ -26,12 +41,24 @@ func main() {
 	http.Handle("/dec/", handlers.DecodeHandler(storage))
 	http.Handle("/red/", handlers.RedirectHandler(storage))
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
+	if *i2p {
+		garlic, err := onramp.NewGarlic()
+		if err != nil {
+			log.Fatal(err)
+		}
+		listener, err := garlic.Listen()
+		if err != nil {
+			log.Fatal(err)
+		}
+		err = http.Serve(listener, nil)
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		err = http.ListenAndServe(*host":"+*port, nil)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
-	err = http.ListenAndServe(":"+port, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
+
 }

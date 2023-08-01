@@ -47,6 +47,8 @@ But this project exists to demonstrate:
     ```
 
 
+(eyedeekay): And onramp, the I2P library I used to adapt this tiny URL shortener to hidden services, illustrates how easy it is to adapt Go network applications to I2P.
+
 ### My other Go libraries
 
 * [Tollbooth](https://github.com/didip/tollbooth): Simple middleware to rate-limit HTTP requests.
