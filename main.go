@@ -19,8 +19,8 @@ var (
 	port = flag.String("port", defport(), "Port(ignored if using I2P)")
 )
 
-func defport() string{
-	p:= os.Getenv("PORT")
+func defport() string {
+	p := os.Getenv("PORT")
 	if p != "" {
 		return p
 	}
@@ -28,6 +28,7 @@ func defport() string{
 }
 
 func main() {
+	flag.Parse()
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	dir, _ := os.UserHomeDir()
